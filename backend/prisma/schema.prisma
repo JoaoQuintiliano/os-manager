@@ -1,0 +1,104 @@
+// ==========================
+// PRISMA CONFIGS
+// ==========================
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL") 
+}
+
+// ==========================
+// ENUMS
+// ==========================
+enum Role {
+  ADMIN
+  TECNICO
+  USER
+}
+
+enum StatusOS {
+  ABERTA
+  EM_ANDAMENTO
+  AGUARDANDO_CLIENTE
+  AGUARDANDO_PECA
+  FINALIZADA
+  CANCELADA
+}
+
+enum Prioridade {
+  NORMAL
+  ALTA
+}
+
+// ==========================
+// MODELS
+// ==========================
+
+model User {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  role      Role
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  ordens     OrdemServico[] @relation("TecnicoOS")
+  historicos HistoricoOS[]
+}
+
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  telefone  String
+  email     String?
+  createdAt DateTime @default(now())
+
+  enderecos Endereco[]
+  ordens    OrdemServico[]
+}
+
+model Endereco {
+  id        Int    @id @default(autoincrement())
+  clienteId Int
+  rua       String
+  cidade    String
+  estado    String
+  cep       String
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+}
+
+model OrdemServico {
+  id         Int        @id @default(autoincrement())
+  descricao  String
+  status     StatusOS   @default(ABERTA)
+  prioridade Prioridade
+  prazoSLA   DateTime
+  createdAt  DateTime   @default(now())
+  closedAt   DateTime?
+
+  clienteId Int
+  tecnicoId Int?
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+  tecnico User?   @relation("TecnicoOS", fields: [tecnicoId], references: [id])
+
+  historicos HistoricoOS[]
+}
+
+model HistoricoOS {
+  id        Int      @id @default(autoincrement())
+  osId      Int
+  usuarioId Int
+  acao      String
+  observacao String?
+  createdAt DateTime @default(now())
+
+  os      OrdemServico @relation(fields: [osId], references: [id])
+  usuario User         @relation(fields: [usuarioId], references: [id])
+}
+
