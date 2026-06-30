@@ -10,10 +10,11 @@ const authMiddleware = (rolesPermitidos = []) => {
     const [, token] = authHeader.split(" ");
 
     try {
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET || "chave_secreta_fallback",
-      );
+      const secret = process.env.JWT_SECRET;
+      if (!secret) {
+        throw new Error("JWT_SECRET não configurado na variável de ambiente");
+      }
+      const decoded = jwt.verify(token, secret);
 
       req.user = decoded;
       if (

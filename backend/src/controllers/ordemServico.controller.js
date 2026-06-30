@@ -42,13 +42,11 @@ const OrdemServicoController = {
       const { id } = req.params;
       const { novoStatus, observacao } = req.body;
 
-      let usuarioId = req.user?.id || req.body.usuarioId; //pegar pelo body p testes
-      usuarioId = parseInt(usuarioId);
+      const usuarioId = req.user?.id;
 
-      if (isNaN(usuarioId)) {
-        return res.status(400).json({
-          error:
-            "usuarioId inválido. Certifique-se de estar logado ou envie o usuarioId no corpo da requisição.",
+      if (!usuarioId) {
+        return res.status(401).json({
+          error: "Usuário não autenticado. Faça login primeiro.",
         });
       }
 

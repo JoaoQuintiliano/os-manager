@@ -24,7 +24,6 @@ const AuthController = {
 
       delete newUser.senha;
       return res.status(201).json(newUser);
-      
     } catch (error) {
       next(error);
     }
@@ -53,7 +52,6 @@ const AuthController = {
 
       delete user.senha;
       return res.json({ user, token });
-
     } catch (error) {
       next(error);
     }

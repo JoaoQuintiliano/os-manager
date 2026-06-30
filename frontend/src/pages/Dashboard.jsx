@@ -185,7 +185,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Tabela|Lista de OS*/}
+        {/* Lista de OS*/}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[800px]">

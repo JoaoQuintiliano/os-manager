@@ -7,7 +7,7 @@ const ClientController = {
       const { nome, telefone, email, endereco } = req.body;
 
       if (!endereco || !endereco.rua) {
-         return res.status(400).json({ error: "Endereço (Rua) é obrigatório" });
+        return res.status(400).json({ error: "Endereço (Rua) é obrigatório" });
       }
 
       const novoCliente = await prisma.cliente.create({
@@ -20,9 +20,9 @@ const ClientController = {
               rua: endereco.rua,
               cidade: endereco.cidade,
               estado: endereco.estado,
-              cep: endereco.cep
-            }
-          }
+              cep: endereco.cep,
+            },
+          },
         },
         include: { enderecos: true },
       });
@@ -37,11 +37,11 @@ const ClientController = {
   async index(req, res, next) {
     try {
       const clientes = await prisma.cliente.findMany({
-        include: { 
-            enderecos: true,
-            _count: { select: { ordens: true } } 
+        include: {
+          enderecos: true,
+          _count: { select: { ordens: true } },
         },
-        orderBy: { nome: 'asc' }
+        orderBy: { nome: "asc" },
       });
       return res.json(clientes);
     } catch (error) {
@@ -58,12 +58,13 @@ const ClientController = {
         include: { enderecos: true, ordens: true },
       });
 
-      if (!cliente) return res.status(404).json({ error: "Cliente não encontrado" });
+      if (!cliente)
+        return res.status(404).json({ error: "Cliente não encontrado" });
       return res.json(cliente);
     } catch (error) {
       next(error);
     }
-  }
+  },
 };
 
 export default ClientController;

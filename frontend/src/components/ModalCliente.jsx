@@ -22,7 +22,7 @@ export function ModalCliente({ onClose, onClienteCriado }) {
       });
 
       onClienteCriado(); // atualiza lista no pai
-      onClose(); 
+      onClose();
       setNome("");
       setEmail("");
       setTelefone("");
