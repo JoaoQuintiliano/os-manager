@@ -1,30 +1,49 @@
 import { Router } from "express";
 import OrdemServicoController from "../controllers/ordemServico.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
-import { validarNovaOS } from "../validators/ordemServico.validator.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
-const Osrouter = Router();
+import {
+  criarOrdemServicoValidator,
+  atualizarStatusValidator,
+  atribuirTecnicoValidator,
+  idOrdemServicoValidator,
+} from "../validators/ordemServico.validator.js";
 
-Osrouter.get("/", authMiddleware(), OrdemServicoController.index);
+const osRouter = Router();
 
-Osrouter.post(
-  "/",
-  validarNovaOS,
+osRouter.get("/", authMiddleware(), OrdemServicoController.index);
+
+osRouter.get(
+  "/:id",
+  authMiddleware(),
+  idOrdemServicoValidator,
   validateRequest,
+  OrdemServicoController.show,
+);
+
+osRouter.post(
+  "/",
   authMiddleware(["ADMIN", "USER"]),
+  criarOrdemServicoValidator,
+  validateRequest,
   OrdemServicoController.store,
 );
 
-Osrouter.patch(
+//patch status
+osRouter.patch( 
   "/:id/status",
   authMiddleware(["ADMIN", "TECNICO"]),
+  atualizarStatusValidator,
+  validateRequest,
   OrdemServicoController.updateStatus,
 );
-Osrouter.patch(
+//patch tecnico
+osRouter.patch(
   "/:id/tecnico",
   authMiddleware(["USER", "ADMIN"]),
+  atribuirTecnicoValidator,
+  validateRequest,
   OrdemServicoController.atribuirTecnico,
 );
-Osrouter.get("/:id", OrdemServicoController.show);
 
-export default Osrouter;
+export default osRouter;
