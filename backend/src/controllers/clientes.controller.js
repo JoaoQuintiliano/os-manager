@@ -1,30 +1,16 @@
-import prisma from "../services/prisma.js";
+import ClienteService from "../services/cliente.service.js";
 
 const ClientController = {
-  // --- STORE (CRIAR) ---
+  //armazenar um client
   async store(req, res, next) {
     try {
-      const { nome, telefone, email, endereco } = req.body;
+      const { nome, telefone, email, enderecos } = req.body;
 
-      if (!endereco || !endereco.rua) {
-        return res.status(400).json({ error: "Endereço (Rua) é obrigatório" });
-      }
-
-      const novoCliente = await prisma.cliente.create({
-        data: {
-          nome,
-          email: email || null,
-          telefone,
-          enderecos: {
-            create: {
-              rua: endereco.rua,
-              cidade: endereco.cidade,
-              estado: endereco.estado,
-              cep: endereco.cep,
-            },
-          },
-        },
-        include: { enderecos: true },
+      const novoCliente = await ClienteService.criar({
+        nome,
+        email,
+        telefone,
+        enderecos,
       });
 
       return res.status(201).json(novoCliente);
@@ -32,34 +18,25 @@ const ClientController = {
       next(error);
     }
   },
-
-  // --- INDEX (LISTAR) ---
+//exibir cliente
   async index(req, res, next) {
     try {
-      const clientes = await prisma.cliente.findMany({
-        include: {
-          enderecos: true,
-          _count: { select: { ordens: true } },
-        },
-        orderBy: { nome: "asc" },
-      });
+      const clientes = await ClienteService.listar();
       return res.json(clientes);
     } catch (error) {
       next(error);
     }
   },
-
-  // --- SHOW (DETALHES) ---
+//buscar cliente
   async show(req, res, next) {
     try {
       const { id } = req.params;
-      const cliente = await prisma.cliente.findUnique({
-        where: { id: Number(id) },
-        include: { enderecos: true, ordens: true },
-      });
+      const cliente = await ClienteService.exibir({ id });
 
-      if (!cliente)
+      if (!cliente) {
         return res.status(404).json({ error: "Cliente não encontrado" });
+      }
+
       return res.json(cliente);
     } catch (error) {
       next(error);
