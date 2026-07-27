@@ -1,17 +1,11 @@
-import prisma from "../services/prisma.js";
+import UsuarioService from "../services/usuario.service.js";
+
 
 const UsuarioController = {
+  //listar users
   async index(req, res, next) {
     try {
-      const usuarios = await prisma.user.findMany({
-        select: {
-          id: true,
-          nome: true,
-          email: true,
-          role: true,
-        },
-      });
-
+      const usuarios = await UsuarioService.listar();
       return res.json(usuarios);
     } catch (error) {
       next(error);
