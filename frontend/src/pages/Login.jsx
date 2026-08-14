@@ -2,14 +2,14 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogIn, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
 import api from "../services/api";
-import { AuthContext } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 
 export function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
-  const auth = useContext(AuthContext);
+  const auth = useAuth();
 
   const navigate = useNavigate();
 

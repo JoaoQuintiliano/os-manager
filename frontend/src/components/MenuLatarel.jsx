@@ -8,13 +8,13 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { AuthContext } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 
 export function MenuLateral() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const auth = useContext(AuthContext);
+  const auth = useAuth();
 
   function handleLogout() {
     auth.logout();

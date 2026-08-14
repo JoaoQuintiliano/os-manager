@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import {
   ArrowLeft,
   Calendar,
@@ -17,6 +18,7 @@ export function OSDetails() {
   const navigate = useNavigate();
   const [os, setOs] = useState(null);
   const [loading, setLoading] = useState(true);
+  const auth = useAuth();
 
   // att andamento
   const [novoStatus, setNovoStatus] = useState("");
@@ -26,10 +28,9 @@ export function OSDetails() {
   const [tecnicos, setTecnicos] = useState([]);
   const [tecnicoIdSelecionado, setTecnicoIdSelecionado] = useState("");
 
-  const user = JSON.parse(localStorage.getItem("@SistemaOS:user"));
-  const isRecepcao = user?.role === "USER";
-  const isTecnico = user?.role === "TECNICO";
-  const isAdmin = user?.role === "ADMIN";
+  const isRecepcao = auth.user.role === "USER";
+  const isTecnico = auth.user.role === "TECNICO";
+  const isAdmin = auth.user.role === "ADMIN";
 
   async function loadOS() {
     try {
