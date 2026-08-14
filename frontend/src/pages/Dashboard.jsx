@@ -22,16 +22,17 @@ import { MenuLateral } from "../components/MenuLatarel";
 import { StatCard } from "../components/StatCard";
 import { TagStatus } from "../components/TagStatus";
 import { TabButton } from "../components/TabButton";
+import { useAuth } from "../hooks/useAuth";
 
 export function Dashboard() {
-  const user = JSON.parse(localStorage.getItem("@SistemaOS:user"));
+  const auth = useAuth();
   const [ordens, setOrdens] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [busca, setBusca] = useState("");
   const [ordenar, setOrdenar] = useState("createdAt");
   const [direcao, setDirecao] = useState("desc");
   const [abaAtiva, setAbaAtiva] = useState(
-    user?.role === "TECNICO" ? "minhas" : "ativas",
+    auth.user.role === "TECNICO" ? "minhas" : "ativas",
   );
   const [loading, setLoading] = useState(false);
 
@@ -106,7 +107,7 @@ export function Dashboard() {
             <h1 className="text-2xl font-bold text-slate-800">
               Painel de Controle
             </h1>
-            <p className="text-slate-500">Bem-vindo, {user?.nome}</p>
+            <p className="text-slate-500">Bem-vindo, {auth.user.nome}</p>
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
@@ -148,7 +149,7 @@ export function Dashboard() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
           <div className="flex bg-white p-1 rounded-lg shadow-sm border border-slate-200 w-full md:w-auto overflow-x-auto">
             {/* Aba Minhas - p/ tec e adm */}
-            {(user?.role === "TECNICO" || user?.role === "ADMIN") && (
+            {(auth.user.role === "TECNICO" || auth.user.role === "ADMIN") && (
               <TabButton
                 active={abaAtiva === "minhas"}
                 onClick={() => setAbaAtiva("minhas")}

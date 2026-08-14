@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogIn, Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
 import api from "../services/api";
+import { AuthContext } from "../contexts/AuthContext";
 
 export function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const auth = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -19,12 +21,7 @@ export function Login() {
     try {
       const response = await api.post("/auth/login", { email, senha });
 
-      localStorage.setItem("@SistemaOS:token", response.data.token);
-      localStorage.setItem(
-        "@SistemaOS:user",
-        JSON.stringify(response.data.user),
-      );
-
+      auth.login(response.data.user, response.data.token);
       navigate("/dashboard");
     } catch (err) {
       setErro(err.response?.data?.error || "E-mail ou senha incorretos.");

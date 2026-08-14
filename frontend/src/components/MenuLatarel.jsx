@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -8,15 +8,16 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { AuthContext } from "../contexts/AuthContext";
 
 export function MenuLateral() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const auth = useContext(AuthContext);
 
   function handleLogout() {
-    localStorage.removeItem("@SistemaOS:token");
-    localStorage.removeItem("@SistemaOS:user");
+    auth.logout();
     navigate("/");
   }
 
