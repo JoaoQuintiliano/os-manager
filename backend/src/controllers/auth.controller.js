@@ -25,6 +25,15 @@ const AuthController = {
       next(error);
     }
   },
+  async me(req, res, next) {
+    try {
+      const user = await AuthService.buscarPorId(req.user.id);
+
+      return res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 export default AuthController;

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import AuthController from "../controllers/auth.controller.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
 import { validateRequest } from "../middlewares/validateRequest.js";
 import {
   registrarValidator,
@@ -21,7 +22,6 @@ authRouter.post(
   validateRequest,
   AuthController.register,
 );
-
 authRouter.post(
   "/login",
   loginLimitador,
@@ -29,5 +29,6 @@ authRouter.post(
   validateRequest,
   AuthController.login,
 );
+authRouter.get("/me", authMiddleware(), AuthController.me);
 
 export default authRouter;

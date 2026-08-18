@@ -57,6 +57,26 @@ const AuthService = {
 
     return { user: userSemSenha, token };
   },
+  async buscarPorId(id) {
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        role: true,
+        ativo: true,
+      },
+    });
+
+    if (!user || !user.ativo) {
+      const error = new Error("Usuário não encontrado ou inativo");
+      error.status = 401;
+      throw error;
+    }
+
+    return user;
+  },
 };
 
 export default AuthService;
