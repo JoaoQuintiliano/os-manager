@@ -57,7 +57,15 @@ const OrdemServicoService = {
     });
   },
 
-  async listar({ busca, status, prioridade, ordenar, direcao }) {
+  async listar({
+    busca,
+    status,
+    prioridade,
+    ordenar,
+    filtro,
+    direcao,
+    usuarioId,
+  }) {
     const camposPermitidos = ["id", "status", "prioridade", "createdAt"];
     const campoOrdenacao = camposPermitidos.includes(ordenar)
       ? ordenar
@@ -69,6 +77,17 @@ const OrdemServicoService = {
     if (prioridade) filtroWhere.prioridade = prioridade;
     if (busca) {
       filtroWhere.cliente = { is: { nome: { contains: busca } } };
+    }
+    if (filtro == "minhas") {
+      filtroWhere.tecnicoId = Number(usuarioId);
+    }
+    if (filtro == "ativas") {
+      filtroWhere.status = { notIn: ["FINALIZADA", "CANCELADA"] };
+    }
+    if (filtro === "finalizadas") {
+      filtroWhere.status = {
+        in: ["FINALIZADA", "CANCELADA"],
+      };
     }
 
     return prisma.ordemServico.findMany({

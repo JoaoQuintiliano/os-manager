@@ -56,7 +56,9 @@ const OrdemServicoController = {
         prioridade,
         ordenar = "createdAt",
         direcao = "desc",
+        filtro,
       } = req.query;
+      const usuarioId = req.user.id;
 
       const ordens = await OrdemServicoService.listar({
         busca,
@@ -64,6 +66,8 @@ const OrdemServicoController = {
         prioridade,
         ordenar,
         direcao,
+        filtro,
+        usuarioId
       });
 
       return res.json(ordens);
