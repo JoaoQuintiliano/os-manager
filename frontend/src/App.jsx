@@ -3,15 +3,22 @@ import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashboard";
 import { OSDetails } from "./pages/OSDetails";
 import { Cliente } from "./pages/Cliente";
-
-const isAutenticado = () => !!localStorage.getItem("@SistemaOS:token");
+import { useAuth } from "./hooks/useAuth";
 
 const PrivateRoute = ({ children }) => {
-  return isAutenticado() ? children : <Navigate to="/" />;
+  const { user, loading } = useAuth();
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+  return user ? children : <Navigate to="/" />;
 };
 
 const PublicRoute = ({ children }) => {
-  return isAutenticado() ? <Navigate to="/dashboard" /> : children;
+  const { user, loading } = useAuth();
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+  return user ? <Navigate to="/dashboard" /> : children;
 };
 
 function App() {
